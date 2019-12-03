@@ -105,7 +105,16 @@ public class StatusCheck {
         Date now = new Date();
         long createdSecondsAgo = (now.getTime() - download.getCreatedAt().getTime()) / 1000;
         if(download.getStatus() == DownloadStatus.PREPARING){
-          prepareDownload(download, injectedIdsClient);
+        	// If prepareDownload was called previously but caught an exception (other than TopcatException),
+        	// we should not call it again immediately, but should impose a delay. See issue #462.          
+          if(lastCheck == null){
+        	  prepareDownload(download, injectedIdsClient);
+            } else {
+              long lastCheckSecondsAgo = (now.getTime() - lastCheck.getTime()) / 1000;
+              if(lastCheckSecondsAgo >= pollIntervalWait){
+            	  prepareDownload(download, injectedIdsClient);
+              }
+            }
         } else if(createdSecondsAgo >= pollDelay){
           if(lastCheck == null){
             performCheck(download, injectedIdsClient);
@@ -145,13 +154,14 @@ public class StatusCheck {
         lastChecks.put(download.getId(), new Date());
       }
     } catch (IOException e){
-    	expireDownload(download,"performCheck IOException: " + e.toString());
+    	handleException(download,"performCheck IOException: " + e.toString());
     } catch(NotFoundException e){
-    	expireDownload(download,"performCheck NotFoundException: " + e.getMessage());
+    	handleException(download,"performCheck NotFoundException: " + e.getMessage());
     } catch(TopcatException e) {
-    	expireDownload(download,"performCheck TopcatException: " + e.toString());
+    	// Note: only expire downloads for TopcatExceptions. See issue #462
+    	handleException(download,"performCheck TopcatException: " + e.toString(), true);
     } catch(Exception e){
-    	expireDownload(download,"performCheck Exception: " + e.toString());
+    	handleException(download,"performCheck Exception: " + e.toString());
     }
   }
 
@@ -238,21 +248,33 @@ public class StatusCheck {
 
       downloadRepository.save(download);
     } catch(NotFoundException e){
-    	expireDownload(download, "prepareDownload NotFoundException: " + e.getMessage());
+    	handleException(download, "prepareDownload NotFoundException: " + e.getMessage());
     } catch(TopcatException e) {
-    	expireDownload(download, "prepareDownload TopcatException: " + e.toString());
+    	// Note: only expire downloads for TopcatExceptions. See issue #462
+    	handleException(download, "prepareDownload TopcatException: " + e.toString(), true);
     } catch(Exception e){
-    	expireDownload(download, "prepareDownload Exception: " + e.toString());
+    	handleException(download, "prepareDownload Exception: " + e.toString());
     }
 
   }
   
-  private void expireDownload( Download download, String reason ) {
-      logger.error("Marking download " + download.getId() + " as expired. Reason: " + reason);
-      download.setStatus(DownloadStatus.EXPIRED);
-      em.persist(download);
-      em.flush();
-      lastChecks.remove(download.getId());
+  private void handleException( Download download, String reason, boolean doExpire ) {
+	  if( doExpire ) {
+	      logger.error("Marking download " + download.getId() + " as expired. Reason: " + reason);
+	      download.setStatus(DownloadStatus.EXPIRED);
+	      em.persist(download);
+	      em.flush();
+	      lastChecks.remove(download.getId());
+	  } else {
+		  // Record that we have tried to check (or prepare) this download,
+		  // so that updateStatuses should not try again immediately.
+		  logger.warn( "Ignoring: " + reason);
+		  lastChecks.put(download.getId(), new Date());
+	  }
+  }
+  
+  private void handleException( Download download, String reason ) {
+	  handleException( download, reason, false );
   }
 
   private String getDownloadUrl( String facilityName, String downloadType ) throws InternalException{

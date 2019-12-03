@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.io.File;
+import java.io.IOException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -46,6 +47,13 @@ public class StatusCheckTest {
             .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
     
+	// StatusCheck treats TopcatExceptions differently to all other Exceptions,
+	// so need to test both cases.  However, the only IdsClient method used by StatusCheck
+	// that can throw anything other than a TopcatException is isPrepared;
+	// so it will not make sense to use FailMode.EXCEPTION for prepareData or getSize.
+	
+	public enum FailMode { OK, EXCEPTION, TOPCAT_EXCEPTION };
+	
     private class MockIdsClient extends IdsClient {
     	
     	// Make size and preparedId available for tests
@@ -54,7 +62,7 @@ public class StatusCheckTest {
     	public String preparedId = "DummyPreparedId";
     	
     	private boolean isPreparedValue;
-    	private boolean failMode;
+    	private FailMode failMode;
     	private boolean prepareDataCalledFlag;
     	private boolean isPreparedCalledFlag;
     	
@@ -63,7 +71,7 @@ public class StatusCheckTest {
     		// This forces us to have the Properties defined, even though we won't use them.
     		super(url);
     		isPreparedValue = false;
-    		failMode = false;
+    		failMode = FailMode.OK;
     		prepareDataCalledFlag = false;
     		isPreparedCalledFlag = false;
     	}
@@ -72,23 +80,26 @@ public class StatusCheckTest {
     	
         public String prepareData(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
         	prepareDataCalledFlag = true;
-        	if( failMode ) {
-        		throw new TopcatException(500,"Deliberate exception for testing");
+        	if( failMode == FailMode.TOPCAT_EXCEPTION ) {
+        		throw new TopcatException(500,"Deliberate TopcatException for testing");
         	}
         	return preparedId;
         }
         
-        public boolean isPrepared(String preparedId) throws TopcatException {
+        public boolean isPrepared(String preparedId) throws TopcatException, IOException {
+        	// This is the only IdsClient method used by StatusCheck that can throw anything other than a TopcatException
         	isPreparedCalledFlag = true;
-        	if( failMode ) {
-        		throw new TopcatException(500,"Deliberate exception for testing");
+        	if( failMode == FailMode.TOPCAT_EXCEPTION ) {
+        		throw new TopcatException(500,"Deliberate TopcatException for testing");
+        	} else if( failMode == FailMode.EXCEPTION ) {
+        		throw new IOException("Deliberate exception for testing");
         	}
         	return isPreparedValue;
         }
 
         public Long getSize(String sessionId, List<Long> investigationIds, List<Long> datasetIds, List<Long> datafileIds) throws TopcatException {
-        	if( failMode ) {
-        		throw new TopcatException(500,"Deliberate exception for testing");
+        	if( failMode == FailMode.TOPCAT_EXCEPTION ) {
+        		throw new TopcatException(500,"Deliberate TopcatException for testing");
         	}
         	return size;
         }
@@ -107,8 +118,8 @@ public class StatusCheckTest {
         	isPreparedCalledFlag = false;
         }
         
-        public void setFailMode(Boolean aBool) {
-        	failMode = aBool;
+        public void setFailMode(FailMode aFailMode) {
+        	failMode = aFailMode;
         }
         
         public boolean prepareDataWasCalled() {
@@ -320,9 +331,13 @@ public class StatusCheckTest {
 		int pollDelay = 0;
 		int pollIntervalWait = 0;
 		
-		// In this test, have the prepareData call fail
+		// In this test, have the prepareData call fail.
+		// Note: IdsClient.prepareData() can only throw TopcatException;
+		// we cannot test handling of other exceptions using the mock.
 		
-		mockIdsClient.setFailMode(true);
+		// A TopcatException - should expire the download
+		
+		mockIdsClient.setFailMode(FailMode.TOPCAT_EXCEPTION);
 
 		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
 		
@@ -376,8 +391,22 @@ public class StatusCheckTest {
 		assertFalse(postDownload.getIsEmailSent());
 		
 		// Now mock the IDS failing
+		// First, with an arbitrary exception - download status should not change
 		
-		mockIdsClient.setFailMode(true);
+		mockIdsClient.setFailMode(FailMode.EXCEPTION);
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download status should not have changed
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now fail with a TopcatException - download should be Expired
+		
+		mockIdsClient.setFailMode(FailMode.TOPCAT_EXCEPTION);
 		
 		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
 		
@@ -562,6 +591,130 @@ public class StatusCheckTest {
 		
 		assertTrue(postDownload.getIsDeleted());
 		assertFalse(postDownload.getIsEmailSent());
+		
+		// clean up
+		deleteDummyDownload(postDownload);
+	}
+	
+	@Test
+	@Transactional
+	public void testExceptionDelays() throws Exception {
+		
+		// Similar to testDelays, but set MockIdsClient to throw an (IO)Exception when used by performCheck
+		
+		String dummyUrl = "DummyUrl";
+		MockIdsClient mockIdsClient = new MockIdsClient(dummyUrl);
+		
+		String preparedId = "InitialPreparedId4";
+		String transport = "http";
+		
+		// Create a two-tier download; initial status should be PREPARING
+		Download dummyDownload = createDummyDownload(preparedId, transport, true);
+		Long downloadId = dummyDownload.getId();
+		
+		assertEquals(DownloadStatus.PREPARING, dummyDownload.getStatus());
+
+		/*
+		 * We assume that the scheduled poll() is not doing any work!
+		 */
+		
+		int pollDelay = 1;
+		int pollIntervalWait = 3;
+		
+		// FIRST mock-scheduled call - expect prepareData to be called, status set to RESTORING
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		// Download status should now be RESTORING, no email sent.
+		
+		Download postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now set mockIdsClient to throw an (IO)Exception when isPrepared is called
+		
+		mockIdsClient.setFailMode(FailMode.EXCEPTION);
+		
+		// SECOND mock-scheduled call - too early: expect isPrepared NOT to be called, and nothing changed
+
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		assertFalse(mockIdsClient.isPreparedWasCalled());
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now sleep for at least pollDelay seconds, and try again
+		
+		TimeUnit.SECONDS.sleep(pollDelay+1);
+
+		// THIRD mock-scheduled call, after pollDelay seconds - expect isPrepared called, but no changes
+
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		assertTrue(mockIdsClient.isPreparedWasCalled());
+		mockIdsClient.resetIsPreparedCalledFlag();
+		
+		// But the status should not have changed, as isPrepared will have thrown an exception
+
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// FOURTH  mock-scheduled call, before pollIntervalWait seconds have passed: isPrepared should NOT be called
+		// (the exception handling should have set the timestamp)
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+
+		assertFalse(mockIdsClient.isPreparedWasCalled());
+
+		// Now mock the IDS having prepared the data - but will still throw an exception
+		
+		mockIdsClient.setIsPrepared(true);
+		
+		// Now wait for at least pollIntervalWaitSeconds, and try again
+		
+		TimeUnit.SECONDS.sleep(pollIntervalWait+1);
+		
+		// FIFTH mock-scheduled call. Nothing should have changed, because an IOException was thrown
+		
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		assertTrue(mockIdsClient.isPreparedWasCalled());
+		mockIdsClient.resetIsPreparedCalledFlag();
+		
+		// But the status should not have changed, as isPrepared will have thrown an exception
+
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.RESTORING, postDownload.getStatus());
+		assertFalse(postDownload.getIsEmailSent());
+		
+		// Now tell the client to stop throwing exceptions
+		
+		mockIdsClient.setFailMode(FailMode.OK);
+		
+		// Now wait for at least pollIntervalWaitSeconds, and try again
+		
+		TimeUnit.SECONDS.sleep(pollIntervalWait+1);
+		
+		// SIXTH  mock-scheduled call - expect isPrepared called, status changed to COMPLETE etc.
+
+		statusCheck.updateStatuses(pollDelay, pollIntervalWait, mockIdsClient);
+		
+		assertTrue(mockIdsClient.isPreparedWasCalled());
+		mockIdsClient.resetIsPreparedCalledFlag();
+		
+		// Download should now be COMPLETE, and email flagged as sent (though it wasn't!)
+		
+		postDownload = getDummyDownload(downloadId);
+		
+		assertEquals(DownloadStatus.COMPLETE, postDownload.getStatus());
+		assertTrue(postDownload.getIsEmailSent());
 		
 		// clean up
 		deleteDummyDownload(postDownload);
