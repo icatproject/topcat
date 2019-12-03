@@ -268,6 +268,7 @@ public class StatusCheck {
 	  } else {
 		  // Record that we have tried to check (or prepare) this download,
 		  // so that updateStatuses should not try again immediately.
+		  logger.warn( "Ignoring: " + reason);
 		  lastChecks.put(download.getId(), new Date());
 	  }
   }
