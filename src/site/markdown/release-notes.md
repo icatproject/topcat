@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.4.7-SNAPSHOT
+
+  * StatusCheck only expires downloads on TopcatExceptions, but will obey poll.interval.wait on other exceptions (issue #462)
+
 ## 2.4.6 (30th Oct 2019)
 
   * Ensure download cart button is disabled when limits are exceeded (issue #459)
