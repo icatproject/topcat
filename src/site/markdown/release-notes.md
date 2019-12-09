@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.4.7-SNAPSHOT
+## 2.4.7 (9th Dec 2019)
 
   * StatusCheck only expires downloads on TopcatExceptions, but will obey poll.interval.wait on other exceptions (issue #462)
 
