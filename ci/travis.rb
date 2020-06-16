@@ -30,7 +30,7 @@ exec %{
   echo "USE mysql; ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'secret'; FLUSH PRIVILEGES;" | mysql -u root
   echo "create database icat;" | mysql -u root --password=secret
   echo "create database topcat;" | mysql -u root --password=secret
-  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root --password=secret
+  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root --password=secret
 
   sudo cp provision/000-default.conf /etc/apache2/sites-available
   sudo a2enmod headers
