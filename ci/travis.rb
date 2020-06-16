@@ -30,7 +30,7 @@ exec %{
   echo "USE mysql; ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'secret'; FLUSH PRIVILEGES;" | mysql -u root
   echo "create database icat;" | mysql -u root --password=secret
   echo "create database topcat;" | mysql -u root --password=secret
-  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '' WITH GRANT OPTION" | mysql -u root --password=secret
+  echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION" | mysql -u root --password=secret
 
   sudo cp provision/000-default.conf /etc/apache2/sites-available
   sudo a2enmod headers
@@ -42,6 +42,7 @@ exec %{
   mv payara41 glassfish4
 
   export PATH="$PATH:#{install_dir}/glassfish4/glassfish/bin"
+  export PATH="$PATH:/home/mnf98541/glassfish4/glassfish/bin"
 
   asadmin start-domain
   asadmin set server.http-service.access-log.format="common"
