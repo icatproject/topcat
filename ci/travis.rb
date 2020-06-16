@@ -23,6 +23,7 @@ exec %{
 
   cd install
 
+  sudo apt-get update
   sudo apt-get --assume-yes install apache2 git software-properties-common unzip build-essential dos2unix
   sudo apt-get install libgconf2-dev -y
 
