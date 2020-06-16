@@ -16,11 +16,7 @@ before_script:
 script:
   - ci/travis.rb
 addons:
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+  chrome: stable
 services:
   - mysql
 after_failure:
