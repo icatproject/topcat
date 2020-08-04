@@ -11,12 +11,7 @@ import javax.net.ssl.SSLSession;
 
 public class TestHelpers {
 
-    static boolean installed = false;
-
     public static void installTrustManager() {
-        // if (installed) {
-        // return;
-        // }
 
         // Create a trust manager that does not validate certificate chains
         // Equivalent to --no-certificate-check in wget
@@ -53,7 +48,5 @@ public class TestHelpers {
         }
         // log message
         System.out.println("Trust manager set up successfully");
-
-        installed = true;
     }
 }
