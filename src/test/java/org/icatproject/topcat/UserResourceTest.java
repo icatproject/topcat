@@ -75,11 +75,11 @@ public class UserResourceTest {
 	private Connection connection;
 
 	@BeforeClass
-	public void beforeAll() {
+	public static void beforeAll() {
 		TestHelpers.installTrustManager();
 	}
 
-	@BeforeClass
+	@Before
 	public void setup() throws Exception {
 		HttpClient httpClient = new HttpClient("https://localhost:8181/icat");
 		String data = "json=" + URLEncoder.encode(

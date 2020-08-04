@@ -77,7 +77,7 @@ public class AdminResourceTest {
 	private static String nonAdminSessionId;
 
 	@BeforeClass
-	public void beforeAll() {
+	public static void beforeAll() {
 		TestHelpers.installTrustManager();
 	}
 
