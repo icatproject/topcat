@@ -26,12 +26,16 @@ public class IcatClientTest {
 
 	private Connection connection;
 
+	@BeforeClass
+	public static void beforeAll() {
+		TestHelpers.installTrustManager();
+	}
+
 	@Before
 	public void setup() throws Exception {
-		TestHelpers.installTrustManager();
-
 		HttpClient httpClient = new HttpClient("https://localhost:8181/icat");
-		String data = "json=" + URLEncoder.encode("{\"plugin\":\"simple\", \"credentials\":[{\"username\":\"root\"}, {\"password\":\"root\"}]}", "UTF8");
+		String data = "json=" + URLEncoder.encode(
+				"{\"plugin\":\"simple\", \"credentials\":[{\"username\":\"root\"}, {\"password\":\"root\"}]}", "UTF8");
 		String response = httpClient.post("session", new HashMap<String, String>(), data).toString();
 		sessionId = Utils.parseJsonObject(response).getString("sessionId");
 
@@ -70,7 +74,7 @@ public class IcatClientTest {
 		results = icatClient.getEntities("datafile", ids);
 		assertEquals(0, results.size());
 
-		List<Long>  investigationIds = new ArrayList<Long>();
+		List<Long> investigationIds = new ArrayList<Long>();
 		ResultSet investigations = connection.createStatement().executeQuery("SELECT * from INVESTIGATION limit 0, 1");
 		investigations.next();
 		investigationIds.add(investigations.getLong("ID"));
@@ -78,7 +82,7 @@ public class IcatClientTest {
 		results = icatClient.getEntities("investigation", investigationIds);
 		assertEquals(1, results.size());
 
-		List<Long>  datasetIds = new ArrayList<Long>();
+		List<Long> datasetIds = new ArrayList<Long>();
 		ResultSet datasets = connection.createStatement().executeQuery("SELECT * from DATASET limit 0, 1");
 		datasets.next();
 		datasetIds.add(datasets.getLong("ID"));
@@ -87,7 +91,7 @@ public class IcatClientTest {
 		assertEquals(1, results.size());
 		assertNotNull(results.get(0).getJsonObject("investigation"));
 
-		List<Long>  datafileIds = new ArrayList<Long>();
+		List<Long> datafileIds = new ArrayList<Long>();
 		ResultSet datafiles = connection.createStatement().executeQuery("SELECT * from DATAFILE");
 		datafiles.next();
 		datafileIds.add(datafiles.getLong("ID"));
@@ -97,7 +101,7 @@ public class IcatClientTest {
 		assertNotNull(results.get(0).getJsonObject("dataset"));
 		assertNotNull(results.get(0).getJsonObject("dataset").getJsonObject("investigation"));
 
-		for(long i = 2; i <= 10001; i++){
+		for (long i = 2; i <= 10001; i++) {
 			datafiles.next();
 			datafileIds.add(datafiles.getLong("ID"));
 		}
@@ -107,67 +111,62 @@ public class IcatClientTest {
 
 	}
 
-
 	@Test
 	public void testGetFullName() throws Exception {
 		IcatClient icatClient = new IcatClient("https://localhost:8181", sessionId);
 		String fullName = icatClient.getFullName();
 
 		assertNotNull(fullName);
-		//assertTrue(fullName.length() > 0);
+		// assertTrue(fullName.length() > 0);
 	}
 
 	/*
-	@Test
-	public void testGetSize() throws Exception {
-		IcatClient icatClient = new IcatClient("https://localhost:8181", sessionId);
+	 * @Test public void testGetSize() throws Exception { IcatClient icatClient =
+	 * new IcatClient("https://localhost:8181", sessionId);
+	 * 
+	 * List<Long> emptyIds = new ArrayList<Long>();
+	 * 
+	 * assertEquals((long) 0, (long) icatClient.getSize(cacheRepository, emptyIds,
+	 * emptyIds, emptyIds));
+	 * 
+	 * List<Long> ids = new ArrayList<Long>(); ids.add((long) 1); ids.add((long) 2);
+	 * ids.add((long) 3);
+	 * 
+	 * assertTrue(icatClient.getSize(cacheRepository, ids, emptyIds, emptyIds) >
+	 * (long) 0); assertTrue(icatClient.getSize(cacheRepository, emptyIds, ids,
+	 * emptyIds) > (long) 0); assertTrue(icatClient.getSize(cacheRepository,
+	 * emptyIds, emptyIds, ids) > (long) 0);
+	 * assertTrue(icatClient.getSize(cacheRepository, ids, ids, ids) > (long) 0); }
+	 */
 
-		List<Long> emptyIds = new ArrayList<Long>();
-
-		assertEquals((long) 0, (long) icatClient.getSize(cacheRepository, emptyIds, emptyIds, emptyIds));
-
-		List<Long> ids = new ArrayList<Long>();
-		ids.add((long) 1);
-		ids.add((long) 2);
-		ids.add((long) 3);
-
-		assertTrue(icatClient.getSize(cacheRepository, ids, emptyIds, emptyIds) > (long) 0);
-		assertTrue(icatClient.getSize(cacheRepository, emptyIds, ids, emptyIds) > (long) 0);
-		assertTrue(icatClient.getSize(cacheRepository, emptyIds, emptyIds, ids) > (long) 0);
-		assertTrue(icatClient.getSize(cacheRepository, ids, ids, ids) > (long) 0);
-	}
-	*/
-
-    private Map<String, List<Long>> createEmptyEntityTypeEntityIds(){
-    	Map<String, List<Long>> out = new HashMap<String, List<Long>>();
+	private Map<String, List<Long>> createEmptyEntityTypeEntityIds() {
+		Map<String, List<Long>> out = new HashMap<String, List<Long>>();
 		out.put("investigation", new ArrayList<Long>());
 		out.put("dataset", new ArrayList<Long>());
 		out.put("datafile", new ArrayList<Long>());
 		return out;
-    }
+	}
 
+	class IcatClientUserIsAdmin extends IcatClient {
 
-    class IcatClientUserIsAdmin extends IcatClient {
-
-		public IcatClientUserIsAdmin(String url, String sessionId){
+		public IcatClientUserIsAdmin(String url, String sessionId) {
 			super(url, sessionId);
 		}
 
 		protected String[] getAdminUserNames() throws Exception {
-			return new String[] {"simple/root"};
+			return new String[] { "simple/root" };
 		}
-    }
+	}
 
-    class IcatClientUserNotAdmin extends IcatClient {
+	class IcatClientUserNotAdmin extends IcatClient {
 
-		public IcatClientUserNotAdmin(String url, String sessionId){
+		public IcatClientUserNotAdmin(String url, String sessionId) {
 			super(url, sessionId);
 		}
 
 		protected String[] getAdminUserNames() throws Exception {
-			return new String[] {"db/test"};
+			return new String[] { "db/test" };
 		}
-    }
-
+	}
 
 }
