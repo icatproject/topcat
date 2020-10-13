@@ -1,0 +1,22 @@
+<settings>
+  <mirrors>
+    <mirror>
+      <id>central-secure</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+  <profiles>
+    <profile>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <serverUrl>https://localhost:8080</serverUrl>
+        <luceneUrl>https://localhost:8080</luceneUrl>
+        <javax.net.ssl.trustStore>/home/vagrant/glassfish4/glassfish/domains/domain1/config/cacerts.jks</javax.net.ssl.trustStore>
+        <containerHome>/home/vagrant/glassfish4</containerHome>
+      </properties>
+    </profile>
+  </profiles>
+</settings>
