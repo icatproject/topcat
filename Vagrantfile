@@ -127,6 +127,8 @@ Vagrant.configure(2) do |config|
     
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get --assume-yes install nodejs maven phantomjs
+    mkdir /home/vagrant/.m2
+    cp /vagrant/provision/settings.xml /home/vagrant/.m2/settings.xml
     sudo update-ca-certificates -f
     sudo npm install -g bower
     sudo npm install -g grunt-cli
@@ -139,8 +141,8 @@ Vagrant.configure(2) do |config|
 
     curl -sSL https://get.rvm.io | bash
     source /home/vagrant/.rvm/scripts/rvm
-    rvm install 2.3.1
-    rvm use 2.3.1 --default
+    rvm install 2.7.1
+    rvm use 2.7.1 --default
     gem install faker rest-client
     ruby /vagrant/tools/lorum_facility_generator.rb
     ruby /vagrant/provision/populate_lucene.rb
