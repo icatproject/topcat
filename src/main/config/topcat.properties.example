@@ -81,3 +81,6 @@ maxCacheSize=100000
 # ids.timeout=180000
 # ids.timeout=180s
 # ids.timeout=3m
+
+# Username that corresponds with the anonymous user - this is used to make anonymous carts unique
+anonUserName=anon/anon

@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.icatproject.topcat.IdsClient;
 import org.icatproject.topcat.FacilityMap;
 import org.icatproject.topcat.IcatClient;
+import org.icatproject.topcat.Properties;
 
 @Stateless
 @LocalBean
@@ -61,6 +62,20 @@ public class UserResource {
 
 	@PersistenceContext(unitName = "topcat")
 	EntityManager em;
+
+	/**
+	 * Returns the cart userName, which is either the ICAT userName if the user isn't anonUserName,
+	 * or it's the ICAT userName plus the sessionId if it is the anon user name
+	 */
+	private String getCartUserName(String userName, String sessionId) {
+		Properties properties = Properties.getInstance();
+		String anonUserName = properties.getProperty("anonUserName", "");
+		if (userName.equals(anonUserName)) {
+			return userName + "/" + sessionId;
+		} else {
+			return userName;
+		}
+	}
 
 	/**
 	 * Returns a list of downloads associated with a particular sessionId
@@ -121,7 +136,8 @@ public class UserResource {
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		// Note: we believe that userName can never be null/empty
-		params.put("userName", icatClient.getUserName());
+		String cartUserName = getCartUserName(icatClient.getUserName(), sessionId);
+		params.put("userName", cartUserName);
 		params.put("queryOffset", queryOffset);
 
 		List<Download> downloads = new ArrayList<Download>();
@@ -177,7 +193,8 @@ public class UserResource {
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		String userName = icatClient.getUserName();
-		if (!download.getUserName().equals(userName)) {
+		String cartUserName = getCartUserName(userName, sessionId);
+		if (!download.getUserName().equals(cartUserName)) {
 			throw new ForbiddenException("you do not have permission to delete this download");
 		}
 
@@ -232,8 +249,9 @@ public class UserResource {
         String icatUrl = getIcatUrl( facilityName );
         IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
-        String userName = icatClient.getUserName();
-		if (!download.getUserName().equals(userName)) {
+		String userName = icatClient.getUserName();
+		String cartUserName = getCartUserName(userName, sessionId);
+		if (!download.getUserName().equals(cartUserName)) {
 			throw new ForbiddenException("you do not have permission to delete this download");
 		}
 
@@ -245,7 +263,7 @@ public class UserResource {
         downloadRepository.save(download);
 
         return Response.ok().build();
-    }
+	}
 
 	/**
 	 * Returns the cart object associated with a particular sessionId and
@@ -289,13 +307,14 @@ public class UserResource {
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		String userName = icatClient.getUserName();
-		Cart cart = cartRepository.getCart(userName, facilityName);
+		String cartUserName = getCartUserName(userName, sessionId);
+		Cart cart = cartRepository.getCart(cartUserName, facilityName);
 
 		if (cart != null) {
 			em.refresh(cart);
 			return Response.ok().entity(cart).build();
 		} else {
-			return emptyCart(facilityName, userName);
+			return emptyCart(facilityName, cartUserName);
 		}
 	}
 
@@ -349,12 +368,13 @@ public class UserResource {
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		String userName = icatClient.getUserName();
-		Cart cart = cartRepository.getCart(userName, facilityName);
+		String cartUserName = getCartUserName(userName, sessionId);
+		Cart cart = cartRepository.getCart(cartUserName, facilityName);
 
 		if (cart == null) {
 			cart = new Cart();
 			cart.setFacilityName(facilityName);
-			cart.setUserName(userName);
+			cart.setUserName(cartUserName);
 			em.persist(cart);
 			em.flush();
 		}
@@ -520,9 +540,10 @@ public class UserResource {
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 
 		String userName = icatClient.getUserName();
-		Cart cart = cartRepository.getCart(userName, facilityName);
+		String cartUserName = getCartUserName(userName, sessionId);
+		Cart cart = cartRepository.getCart(cartUserName, facilityName);
 		if (cart == null) {
-			return emptyCart(facilityName, userName);
+			return emptyCart(facilityName, cartUserName);
 		}
 
 		if (items.equals("*")) {
@@ -562,7 +583,7 @@ public class UserResource {
 		if (cart.getCartItems().size() == 0) {
 			em.remove(cart);
 			em.flush();
-			return emptyCart(facilityName, userName);
+			return emptyCart(facilityName, cartUserName);
 		}
 
 		return Response.ok().entity(cart).build();
@@ -632,10 +653,11 @@ public class UserResource {
 		String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
 		String userName = icatClient.getUserName();
+		String cartUserName = getCartUserName(userName, sessionId);
 
-		logger.info("submitCart: get cart for user: " + userName + ", facility: " + facilityName + "...");
+		logger.info("submitCart: get cart for user: " + cartUserName + ", facility: " + facilityName + "...");
 
-		Cart cart = cartRepository.getCart(userName, facilityName);
+		Cart cart = cartRepository.getCart(cartUserName, facilityName);
 		String fullName = icatClient.getFullName();
 		Long downloadId = null;
 		String transportUrl = getDownloadUrl(facilityName, transport);
@@ -696,7 +718,7 @@ public class UserResource {
 			}
 		}
 
-		return emptyCart(facilityName, userName, downloadId);
+		return emptyCart(facilityName, cartUserName, downloadId);
 	}
 
 
