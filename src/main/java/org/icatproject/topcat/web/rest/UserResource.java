@@ -60,17 +60,22 @@ public class UserResource {
 	@EJB
 	private CacheRepository cacheRepository;
 
+	private String anonUserName;
+
 	@PersistenceContext(unitName = "topcat")
 	EntityManager em;
+
+	public UserResource() {
+		Properties properties = Properties.getInstance();
+		this.anonUserName = properties.getProperty("anonUserName", "");
+    }
 
 	/**
 	 * Returns the cart userName, which is either the ICAT userName if the user isn't anonUserName,
 	 * or it's the ICAT userName plus the sessionId if it is the anon user name
 	 */
 	private String getCartUserName(String userName, String sessionId) {
-		Properties properties = Properties.getInstance();
-		String anonUserName = properties.getProperty("anonUserName", "");
-		if (userName.equals(anonUserName)) {
+		if (userName.equals(this.anonUserName)) {
 			return userName + "/" + sessionId;
 		} else {
 			return userName;
