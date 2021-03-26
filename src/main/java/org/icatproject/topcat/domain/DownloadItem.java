@@ -2,6 +2,7 @@ package org.icatproject.topcat.domain;
 
 import java.io.Serializable;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -77,6 +78,7 @@ public class DownloadItem implements Serializable {
         this.entityId = entityId;
     }
 
+    @JsonbTransient
     @XmlTransient
     public Download getDownload() {
         return download;
