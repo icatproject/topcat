@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.4.8 (26th Mar 2021)
+
+  * Carts made by anonymous users are now separate between different sessions (PR #473)
+  * Added JSON-B annotations to allow TopCAT to be deployed on Payara 5 (PR #475)
+
 ## 2.4.7 (9th Dec 2019)
 
   * StatusCheck only expires downloads on TopcatExceptions, but will obey poll.interval.wait on other exceptions (issue #462)
