@@ -229,6 +229,12 @@
 			<version>7.0</version>
 		</dependency>
 		<dependency>
+			<!-- JSON-B API from JavaEE 8, which gives the @JsonbTransient annotation required for Payara 5 -->
+			<groupId>javax.json.bind</groupId>
+			<artifactId>javax.json.bind-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
 		     <groupId>javax.websocket</groupId>
 		     <artifactId>javax.websocket-api</artifactId>
 		     <version>1.1</version>
