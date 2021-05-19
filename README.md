@@ -2,6 +2,8 @@
 
 A web based GUI able to search across multiple ICAT instances and download data via the IDS.
 
+Note that we are developing a new GUI interface for the ICAT metadata catalogued called [DataGateway](https://github.com/ral-facilities/datagateway). 
+
 ## Status
 
 [![Build Status](https://travis-ci.org/icatproject/topcat.svg?branch=master)](https://travis-ci.org/icatproject/topcat)
