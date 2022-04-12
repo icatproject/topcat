@@ -342,6 +342,13 @@ public class UserResource {
 	 *            investigation) and entity id pairs in the form: investigation
 	 *            2, datafile 1
 	 *
+	 * @param remove
+	 *            flag to determine whether the request should be used to remove
+	 *            items from the cart or not. If set to true, the items given in
+	 *            the request will be removed from the cart (equivalent to the
+	 *            DELETE endpoint). The default is to add to the cart (i.e.
+	 *            false)
+	 *
 	 * @return returns the cart object in the form:
 	 *         {"cartItems":[{"entityId":18178,"entityType":"datafile","id":1,
 	 *         "name":"tenenvironment.rhy","parentEntities":[{"entityId":182,
@@ -364,10 +371,16 @@ public class UserResource {
 	@Path("/cart/{facilityName}/cartItems")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response addCartItems(@PathParam("facilityName") String facilityName, 
-			@FormParam("sessionId") String sessionId, @FormParam("items") String items)
+			@FormParam("sessionId") String sessionId, @FormParam("items") String items, @FormParam("remove") Boolean remove)
 			throws TopcatException, MalformedURLException, ParseException {
 
 		logger.info("addCartItems() called");
+
+		if (remove == true) {
+			logger.info("Calling deleteCartItems() from addCartItems()");
+			Response deleteCartResponse = this.deleteCartItems(facilityName, sessionId, items);
+			return deleteCartResponse;
+		}
 
 		String icatUrl = getIcatUrl( facilityName );
 		IcatClient icatClient = new IcatClient(icatUrl, sessionId);
