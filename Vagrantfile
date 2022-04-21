@@ -126,12 +126,13 @@ Vagrant.configure(2) do |config|
 
     
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-    sudo apt-get --assume-yes install nodejs maven phantomjs
+    sudo apt-get --assume-yes install maven
+    sudo apt-get --assume-yes --force-yes install nodejs phantomjs # There are problems and -y was used without --force-yes
     mkdir /home/vagrant/.m2
     cp /vagrant/provision/settings.xml /home/vagrant/.m2/settings.xml
     sudo update-ca-certificates -f
     sudo npm install -g bower
-    sudo npm install -g grunt-cli
+    sudo npm install -g grunt-cli@1.3.2
     cd /vagrant/yo
     bower install
     sudo chown -R vagrant:vagrant /home/vagrant/.npm
@@ -139,7 +140,7 @@ Vagrant.configure(2) do |config|
     sudo dos2unix /etc/profile.d/phantomjs_bin.sh
     source /etc/profile.d/phantomjs_bin.sh
 
-    curl -sSL https://get.rvm.io | bash
+    curl -sSLk https://get.rvm.io | bash
     source /home/vagrant/.rvm/scripts/rvm
     rvm install 2.7.1
     rvm use 2.7.1 --default
@@ -159,7 +160,7 @@ Vagrant.configure(2) do |config|
     sudo chmod 755 /usr/bin/topcat
     sudo dos2unix /usr/bin/topcat
     topcat build_install
-    asadmin -t set applications.application.topcat-2.4.8.deployment-order=140
+    asadmin -t set applications.application.topcat-2.4.9-SNAPSHOT.deployment-order=140
 
   }
 end
