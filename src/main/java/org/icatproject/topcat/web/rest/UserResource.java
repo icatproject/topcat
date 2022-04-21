@@ -28,6 +28,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.DefaultValue;
 
 import org.icatproject.topcat.domain.*;
 import org.icatproject.topcat.exceptions.*;
@@ -371,7 +372,7 @@ public class UserResource {
 	@Path("/cart/{facilityName}/cartItems")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response addCartItems(@PathParam("facilityName") String facilityName, 
-			@FormParam("sessionId") String sessionId, @FormParam("items") String items, @FormParam("remove") Boolean remove)
+			@FormParam("sessionId") String sessionId, @FormParam("items") String items, @DefaultValue("false") @FormParam("remove") Boolean remove)
 			throws TopcatException, MalformedURLException, ParseException {
 
 		logger.info("addCartItems() called");
