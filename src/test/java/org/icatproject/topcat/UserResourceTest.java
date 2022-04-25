@@ -133,7 +133,7 @@ public class UserResourceTest {
 		// We assume that there is a dataset with id = 1, and that simple/root can see
 		// it.
 
-		response = userResource.addCartItems(facilityName, sessionId, "dataset 1");
+		response = userResource.addCartItems(facilityName, sessionId, "dataset 1", false);
 		assertEquals(200, response.getStatus());
 
 		response = userResource.getCart(facilityName, sessionId);
@@ -169,7 +169,7 @@ public class UserResourceTest {
 		System.out.println("DEBUG testSubmitCart: initial downloads size: " + initialDownloadsSize);
 
 		// Put something into the Cart, so we have something to submit
-		response = userResource.addCartItems(facilityName, sessionId, "dataset 1");
+		response = userResource.addCartItems(facilityName, sessionId, "dataset 1", false);
 		assertEquals(200, response.getStatus());
 
 		// Now submit it
