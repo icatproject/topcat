@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.4.9-SNAPSHOT
+
+  * Add ability to remove items from cart via a POST request to /cartItems (PR #483)
+
 ## 2.4.8 (26th Mar 2021)
 
   * Carts made by anonymous users are now separate between different sessions (PR #473)
