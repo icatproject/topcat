@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.4.9-SNAPSHOT
+## 2.4.9 (14 June 2022)
 
   * Add ability to remove items from cart via a POST request to /cartItems (PR #483)
 
