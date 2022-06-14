@@ -134,7 +134,7 @@ exec %{
   ./setup install
   cd ../
 
-  asadmin -t set applications.application.topcat-2.4.9.deployment-order=140
+  asadmin -t set applications.application.topcat-2.4.10-SNAPSHOT.deployment-order=140
 
   cd ../yo
 
